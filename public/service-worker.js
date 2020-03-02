@@ -69,6 +69,7 @@ const FILES_TO_CACHE = [
       caches.open(CACHE_NAME).then(cache => {
         return cache.match(event.request).then(res => {
           return res || fetch(event.request);
+        });
       })
     );
   });
