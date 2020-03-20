@@ -8,8 +8,7 @@ const FILES_TO_CACHE = [
   
   const CACHE_NAME = "static-cache-v2";
   const DATA_CACHE_NAME = "data-cache-v1";
-  
-  // install
+   // install
   self.addEventListener("install", function(event) {
     event.waitUntil(
       caches.open(CACHE_NAME).then(cache => {
@@ -45,13 +44,13 @@ const FILES_TO_CACHE = [
       event.respondWith(
         caches.open(DATA_CACHE_NAME).then(cache => {
           return fetch(event.request)
-            .then(response => {
-              // If the response was good, clone it and store it in the cache.
-              if (response.status === 200) {
-                cache.put(event.request.url, response.clone());
+            .then(res => {
+              // If the res was good, clone it and store it in the cache.
+              if (res.status === 200) {
+                cache.put(event.request.url, res.clone());
               }
   
-              return response;
+              return res;
             })
             .catch(err => {
               // Network request failed, try to get it from the cache.
