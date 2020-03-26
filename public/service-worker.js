@@ -1,74 +1,59 @@
 const FILES_TO_CACHE = [
-    "/",
-    "/index.html",
-    "/style.css",
-    "/index.js",
-    "/db.js",
-  ];
-  
-  const CACHE_NAME = "static-cache-v2";
-  const DATA_CACHE_NAME = "data-cache-v1";
-   // install
-  self.addEventListener("install", function(event) {
-    event.waitUntil(
+  "/",
+  "index.js",
+  "style.css"
+];
+
+const CACHE_NAME = "static-cache-v2";
+const DATA_CACHE_NAME = "data-cache-v1";
+
+//install
+self.addEventListener("install", function(evt) {
+  evt.waitUntil(
       caches.open(CACHE_NAME).then(cache => {
-        console.log("Your files were pre-cached successfully!");
-        return cache.addAll(FILES_TO_CACHE);
+          console.log("Your files were cached successfully");
+          return cache.addAll(FILES_TO_CACHE);
       })
-    );
-  
-    self.skipWaiting();
-  });
-  
-  self.addEventListener("activate", function(event) {
-    event.waitUntil(
+  );
+  self.skipWaiting();
+})
+
+self.addEventListener("activate", function(evt) {
+  evt.waitUntil(
       caches.keys().then(keyList => {
-        return Promise.all(
-          keyList.map(key => {
-            if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
-              console.log("Removing old cache data", key);
-              return caches.delete(key);
-            }
-          })
-        );
+          return Promise.all(
+              keyList.map(key => {
+                  if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
+                      console.log("Removing old cached data", key);
+                      return caches.delete(key);
+                  }
+              })
+          );
       })
-    );
-  
-    self.clients.claim();
-  });
-  
-  // fetch
-  self.addEventListener("fetch", function(event) {
-    // cache successful requests to the API
-    if (event.request.url.includes("/api/")) {
-      event.respondWith(
-        caches.open(DATA_CACHE_NAME).then(cache => {
-          return fetch(event.request)
-            .then(res => {
-              // If the res was good, clone it and store it in the cache.
-              if (res.status === 200) {
-                cache.put(event.request.url, res.clone());
-              }
-  
-              return res;
-            })
-            .catch(err => {
-              // Network request failed, try to get it from the cache.
-              return cache.match(event.request);
-            });
-        }).catch(err => console.log(err))
+  );
+  self.clients.claim();
+})
+
+
+//fetch
+self.addEventListener("fetch", function(evt) {
+  if (evt.request.url.includes("/api")) {
+      evt.respondWith(
+          caches.open(DATA_CACHE_NAME).then(cache => {
+              return fetch(evt.request).then(response => {
+                  if (response.status === 200) {
+                      cache.put(evt.request.url, response.clone());
+                  }
+                  return response;
+              })
+              .catch(err => {
+                  return cache.match(evt.request);
+              });
+          }).catch(err => console.log(err))
       );
-  
       return;
-    }
-  
-    // if the request is not for the API, serve static assets using "offline-first" approach.
-    // see https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook#cache-falling-back-to-network
-    event.respondWith(
-      caches.open(CACHE_NAME).then(cache => {
-        return cache.match(event.request).then(res => {
-          return res || fetch(event.request);
-        });
-      })
-    );
-  });
+  }
+  evt.respondWith(caches.match(evt.request).then(function(response) {
+      return response || fetch(evt.request);
+  }));
+});

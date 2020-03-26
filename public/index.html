@@ -1,40 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-  
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <meta name="theme-color" content="#317EFB" />
 
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-    <link rel="stylesheet" href="./style.css" />
-    
-    <title>Budget Tracker</title>
-  </head>
-  
-  <body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="theme-color" content="#317EFB" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="/style.css" />
+  <title>Budget Tracker</title>
+</head>
+
+<body>
+  <div>
+    <header>
+      <h1>Budget Tracker</h1>
+    </header>
     <div class="wrapper">
       <div class="total">
-        <div>Your total is: $<span id="total">0</span></div>
+        <h3>Your total is...: $<span id="total">0</span></h3>
       </div>
 
       <form>
-        <label for="t-name">Transaction Name:</label>
-        <input type="text" id="t-name" placeholder="Name" />
+        <label for="transactionName">Transaction Name: </label>
+        <input type="text" id="transactionName" placeholder="Transaction Name" />
 
-        <label for="t-amount">Transaction Amount:</label>
-        <input type="number" min="0" id="t-amount" placeholder="Amount" />
+        <label for="transactionAmount">Transaction Amount: </label>
+        <input type="number" id="transactionAmount" min="0" placeholder="Transaction Amount" />
 
-        <div class="transaction-buttons">
-          <button id="add-btn"><i class="fa fa-plus"></i> Add Funds</button>
-          <button id="sub-btn">
-            <i class="fa fa-minus"></i> Subtract Funds
+        <div class="transactionButtons">
+          <button id="addBtn">
+            <i class="fa fa-plus">Add Funds</i>
+          </button>
+          <button id="subtractBtn">
+            <i class="fa fa-minus">Subtract Funds</i>
           </button>
         </div>
+
         <p role="alert" class="error"></p>
       </form>
 
@@ -44,25 +46,18 @@
             <th>Transaction</th>
             <th>Amount</th>
           </thead>
-          <tbody id="tbody"></tbody>
+          <tbody id="transactionBody"></tbody>
         </table>
       </div>
 
-      <canvas id="my-chart"></canvas>
+      <canvas id="myChart"></canvas>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
-    <script src="./index.js"></script>
-    <script src="./db.js"></script>
-    <script>
-      if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("./service-worker.js", { scope: "/" })
-            .then(() => console.log("We found your service worker file!"))
-            .catch(error => console.log("Service worker failed", error));
 
-      };
-            
-            
-    </script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  <script src="/db.js"></script>
+  <script src="/index.js"></script>
+</body>
+
 </html>
